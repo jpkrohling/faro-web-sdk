@@ -22,14 +22,6 @@ export function initializeLogsAPI(
   let lastPayload: Pick<LogEvent, 'message' | 'level' | 'context'> | null = null;
 
   const pushLog: LogsAPI['pushLog'] = (args, { context, level, skipDedupe } = {}) => {
-    const session = metas.value.session;
-    if (session?.isSampled) {
-      internalLogger.debug(
-        `Drop Log ${JSON.stringify({ args, context, level })} because it occurs within a sampled session ${session}.`
-      );
-      return;
-    }
-
     try {
       const item: TransportItem<LogEvent> = {
         type: TransportItemType.LOG,

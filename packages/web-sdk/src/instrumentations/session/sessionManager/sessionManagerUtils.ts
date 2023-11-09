@@ -59,7 +59,13 @@ export function getUserSessionUpdater({ fetchUserSession, storeUserSession }: Ge
       storeUserSession(newSession);
 
       faro.api?.setSession(newSession.sessionMeta);
+
       faro.config.sessionTracking?.onSessionChange?.(sessionFromStorage?.sessionMeta ?? null, newSession.sessionMeta!);
+
+      faro.api.pushEvent('session_change', {
+        previousSession: sessionFromStorage?.sessionMeta?.id! ?? null,
+        newSession: newSession.sessionMeta.id!,
+      });
     }
   };
 }

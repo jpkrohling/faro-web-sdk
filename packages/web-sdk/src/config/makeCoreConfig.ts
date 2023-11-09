@@ -101,7 +101,7 @@ export function makeCoreConfig(browserConfig: BrowserConfig): Config | undefined
       ...browserConfig.sessionTracking,
     },
 
-    // TODO: deprecate/remove legacy session object at ga
+    // TODO: remove legacy session object at ga
     session: browserConfig.session ?? createSession(),
 
     user: browserConfig.user,
