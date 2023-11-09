@@ -35,6 +35,19 @@ export function initializeExceptionsAPI(
   const getStacktraceParser: ExceptionsAPI['getStacktraceParser'] = () => stacktraceParser;
 
   const pushError: ExceptionsAPI['pushError'] = (error, { skipDedupe, stackFrames, type, context } = {}) => {
+    const session = metas.value.session;
+    if (session?.isSampled) {
+      internalLogger.debug(
+        `Drop Error ${JSON.stringify({
+          error,
+          type,
+          stackFrames,
+          context,
+        })} because it occurs within a sampled session ${session}.`
+      );
+      return;
+    }
+
     type = type || error.name || defaultExceptionType;
 
     const item: TransportItem<ExceptionEvent> = {

@@ -41,6 +41,7 @@ export interface MetaUser {
 
 export interface MetaSession {
   id?: string;
+  isSampled?: boolean;
   attributes?: MetaAttributes;
 }
 

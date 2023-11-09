@@ -19,6 +19,18 @@ export function initializeEventsAPI(
   let lastPayload: Pick<EventEvent, 'name' | 'domain' | 'attributes'> | null = null;
 
   const pushEvent: EventsAPI['pushEvent'] = (name, attributes, domain, { skipDedupe } = {}) => {
+    const session = metas.value.session;
+    if (session?.isSampled) {
+      internalLogger.debug(
+        `Drop Event ${JSON.stringify({
+          name,
+          attributes,
+          domain,
+        })} because it occurs within a sampled session ${session}.`
+      );
+      return;
+    }
+
     try {
       const item: TransportItem<EventEvent> = {
         meta: metas.value,

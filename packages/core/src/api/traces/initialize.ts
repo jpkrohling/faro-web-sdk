@@ -38,6 +38,14 @@ export function initializeTracesAPI(
   };
 
   const pushTraces: TracesAPI['pushTraces'] = (payload) => {
+    const session = metas.value.session;
+    if (session?.isSampled) {
+      internalLogger.debug(
+        `Drop Trace ${JSON.stringify(payload)} because it occurs within a sampled session ${session}.`
+      );
+      return;
+    }
+
     try {
       const item: TransportItem<TraceEvent> = {
         type: TransportItemType.TRACE,
